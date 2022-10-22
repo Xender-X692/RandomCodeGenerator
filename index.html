@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Code Generator</title>
+    <style>
+        body{
+            height: 100vh;
+            background-color: #4396aa;
+            
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container{
+            width: 900px;
+            max-width: 900px;
+            height: 400px;
+            background-color: #4396aa;
+            
+            border: 1px solid rgba(0,0,0,0.5);
+            box-shadow: 1px 1px 10px rgba(0,0,0,0.5);    
+    }
+
+        .quote-container{
+            text-align: center;
+            width: 100%;
+            height: 250px;
+
+            font-size: 25px;
+            color: darkblue;
+        }
+        #author{
+            text-align: center;
+            font-size: 30px;
+            font-weight: 700;
+            font-family: sans-serif;
+            color: darkblue;
+        }
+        .btn-container{
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn{
+            background-color: #0d5376;
+            border: none;
+            padding: 18px 30px;
+            font-size: 21px;
+            font-weight: bold;
+            font-family: sans-serif;
+            letter-spacing: 0.5px;
+            color: aliceblue;
+            border-radius: 10px;
+            margin: 0 10px;
+            cursor: pointer;
+            box-shadow: 0 0.3rem rgba(0,0,0,0.5);
+        }
+        
+
+        button:hover{
+            filter:brightness(110%);
+        }
+        button:active{
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        .loader{
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #4396aa;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+
+            /* position: absolute;
+            top: 50%;
+            left: 50%; */
+            /* transform: translate(-50%,-50%); */
+        }
+        @keyframes spin {
+            0%{transform: rotate(0deg);}
+            100%{transform: rotate(360deg);}
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container" id="container">
+        <div class="quote-container long" id="quote-container">
+            <h1 class="quote" id="quote">hello</h1>
+        </div>
+
+        <div class="quote-author">
+            <div id="author"><span>Lincon</span></div>
+        </div>
+        <div class="btn-container">
+            <button class="btn">Twitter</button>
+            <button class="btn" id="newquote">New Quote</button>
+        </div>
+    </div>
+    <div id="loader" class="loader"></div>
+
+
+
+    <script>
+        const newQuote = document.getElementById('newquote');
+        const quoteHtml = document.getElementById('quote');
+        const author = document.getElementById('author');
+        const quoteContainer = document.getElementById('container');
+        const loader = document.getElementById('loader');
+
+        let quoteData = [];
+        const loading =()=>{
+            loader.hidden = false;
+            quoteContainer.hidden = true;
+        }
+        const datashow =()=>{
+            loader.hidden = true;
+            quoteContainer.hidden = false;
+        }
+
+        const randomQuote = () =>{
+            loading()
+
+            const quote = quoteData[Math.floor(Math.random() * quoteData.length)]
+            quoteHtml.textContent = quote.text;
+            author.textContent = quote.author;
+            if(!quote.author){author.textContent = 'Unknown'} else {author.textContent = quote.author;}
+
+            datashow();
+        };
+
+        newQuote.addEventListener('click',randomQuote);
+        async function quoteGenerator(){ 
+            loading();
+
+            const apiUrl = 'https://type.fit/api/quotes';
+            try{
+                const response = await fetch(apiUrl);
+                quoteData = await response.json();
+                randomQuote();
+
+            }catch(error){
+                console.log(error);
+            }
+        }
+
+        quoteGenerator();
+
+
+    </script>
+    
+</body>
+</html>
